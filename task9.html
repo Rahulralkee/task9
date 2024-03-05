@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="chatApp">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Real-time Chat Application</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: dimgrey;
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    max-width: 600px;
+    margin: 50px auto;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .chat-box {
+    padding: 20px;
+    overflow-y: auto;
+    height: 300px;
+  }
+
+  .message {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+  }
+
+  .input-box {
+    padding: 10px;
+    border-top: 1px solid #ddd;
+  }
+
+  input[type="text"] {
+    width: calc(100% - 80px);
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+  }
+
+  button {
+    padding: 8px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body ng-controller="ChatController">
+
+<div class="container">
+  <h2>Real-time Chat</h2>
+  <div class="chat-box" ng-scroll-bottom>
+    <div class="message" ng-repeat="message in messages">{{ message }}</div>
+  </div>
+  <div class="input-box">
+    <input type="text" ng-model="newMessage" placeholder="Type a message...">
+    <button ng-click="sendMessage()">Send</button>
+  </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+<script>
+  var app = angular.module('chatApp', []);
+
+  app.controller('ChatController', function($scope, $timeout) {
+    $scope.messages = [];
+
+    $scope.sendMessage = function() {
+      if ($scope.newMessage) {
+        $scope.messages.push($scope.newMessage);
+        $scope.newMessage = '';
+
+        // Simulate receiving a message after a short delay (replace with actual implementation)
+        $timeout(function() {
+          $scope.messages.push("Received: " + $scope.newMessage);
+        }, 1000);
+      }
+    };
+  });
+
+  app.directive('ngScrollBottom', function($timeout) {
+    return {
+      link: function(scope, element, attr) {
+        scope.$watchCollection(attr.ngScrollBottom, function(newVal) {
+          if (newVal) {
+            $timeout(function() {
+              element[0].scrollTop = element[0].scrollHeight;
+            }, 0);
+          }
+        });
+      }
+    };
+  });
+</script>
+
+</body>
+</html>
